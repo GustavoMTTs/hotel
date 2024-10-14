@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Transilvânia</title>
+</head>
+<body>
+    <h1>Bem-vindo ao Hotel Transilvânia</h1>
+    <script>
+        let hotelName = "Hotel Transilvânia";
+        let username;
+        let password = 2678;
+        let rooms = Array(20).fill('livre');
+        let welcomeMessage;
+        let gratuities = 0;
+        let halfPayments = 0;
+        let totalRevenue = 0;
+        let guests = [];
+
+        function showWelcome() {
+            console.log(`Bem-vindo ao ${hotelName}`);
+            username = prompt("Por favor, informe seu nome:");
+            let inputPassword = prompt("Por favor, informe a senha:");
+
+            if (inputPassword != password) {
+                console.log("Senha incorreta. Tente novamente.");
+                return showWelcome();
+            }
+
+            welcomeMessage = `Bem-vindo ao ${hotelName}, ${username}. É um imenso prazer ter você por aqui!`;
+            console.log(welcomeMessage);
+            mainMenu();
+        }
+
+        function mainMenu() {
+            console.log(`\nMenu Principal:
+            1. Quantos quartos são?
+            2. Como soletra?
+            3. Com "S" ou com "Z"?
+            4. Que horas você pode?
+            5. Álcool ou gasolina?
+            6. Ar puro, finalmente?
+            7. Sair`);
+
+            let option = prompt("Escolha uma opção:");
+
+            switch (option) {
+                case '1':
+                    reserveRoom();
+                    break;
+                case '2':
+                    registerGuests();
+                    break;
+                case '3':
+                    manageGuests();
+                    break;
+                case '4':
+                    scheduleEvent();
+                    break;
+                case '5':
+                    compareFuelPrices();
+                    break;
+                case '6':
+                    maintenanceQuotes();
+                    break;
+                case '7':
+                    console.log(`Muito obrigado e até logo, ${username}.`);
+                    break;
+                default:
+                    console.log("Opção inválida, tente novamente.");
+                    mainMenu();
+                    break;
+            }
+        }
+
+        function reserveRoom() {
+            let dailyRate = parseFloat(prompt("Qual o valor padrão da diária?"));
+            if (isNaN(dailyRate) || dailyRate < 0) {
+                console.log(`Valor inválido, ${username}`);
+                return reserveRoom();
+            }
+
+            let numberOfDays = parseInt(prompt("Quantas diárias serão necessárias?"));
+            if (isNaN(numberOfDays) || numberOfDays <= 0 || numberOfDays > 30) {
+                console.log(`Valor inválido, ${username}`);
+                return reserveRoom();
+            }
+
+            let guestName = prompt("Qual o nome do hóspede?");
+            let roomNumber = parseInt(prompt("Qual o quarto para reserva? (1 - 20)?"));
+
+            if (rooms[roomNumber - 1] === 'ocupado') {
+                console.log("Quarto já está ocupado. Escolha outro.");
+                return reserveRoom();
+            }
+
+            let totalCost = dailyRate * numberOfDays;
+            console.log(`O valor de ${numberOfDays} dias de hospedagem é de R$${totalCost.toFixed(2)}`);
+
+            let confirm = prompt(`${username}, você confirma a hospedagem para ${guestName} por ${numberOfDays} dias para o quarto ${roomNumber} por R$${totalCost.toFixed(2)}? S/N`).toUpperCase();
+            if (confirm === 'S') {
+                rooms[roomNumber - 1] = 'ocupado';
+                console.log(`${username}, reserva efetuada para ${guestName}.`);
+            }
+
+            console.log("Lista de quartos e suas ocupações: " + rooms.map((room, index) => `${index + 1}- ${room}`).join('; '));
+            mainMenu();
+        }
+
+        function registerGuests() {
+            let dailyRate = parseFloat(prompt("Qual o valor padrão da diária?"));
+            while (true) {
+                let guestName = prompt("Qual o nome do Hóspede?");
+                if (guestName.toUpperCase() === "PARE") {
+                    break;
+                }
+
+                let age = parseInt(prompt("Qual a idade do Hóspede?"));
+                if (age < 6) {
+                    console.log(`${guestName} possui gratuidade.`);
+                    gratuities++;
+                } else if (age > 60) {
+                    console.log(`${guestName} paga meia.`);
+                    halfPayments++;
+                    totalRevenue += dailyRate / 2;
+                } else {
+                    totalRevenue += dailyRate;
+                }
+
+                guests.push(guestName);
+                console.log(`${guestName} cadastrada(o) com sucesso.`);
+                console.log(`Total de hóspedes: ${guests.length}`);
+                console.log(`Gratuidades: ${gratuities}`);
+                console.log(`Meias: ${halfPayments}`);
+                console.log(`Receita total: R$${totalRevenue.toFixed(2)}`);
+            }
+            mainMenu();
+        }
+
+        function manageGuests() {
+            console.log("Lista de hóspedes: " + guests.join(', '));
+            mainMenu();
+        }
+
+        function scheduleEvent() {
+            let auditoriumCapacity = parseInt(prompt("Qual a capacidade do auditório?"));
+            let numberOfPeople = parseInt(prompt("Quantas pessoas virão para o evento?"));
+
+            if (numberOfPeople > auditoriumCapacity) {
+                console.log("Capacidade do auditório excedida.");
+            } else {
+                console.log("Evento agendado com sucesso!");
+            }
+            mainMenu();
+        }
+
+        function compareFuelPrices() {
+            let fuelPrices = [];
+            for (let i = 0; i < 3; i++) {
+                let price = parseFloat(prompt(`Informe o preço do combustível ${i + 1}:`));
+                fuelPrices.push(price);
+            }
+            let minPrice = Math.min(...fuelPrices);
+            console.log(`O menor preço do combustível é R$${minPrice.toFixed(2)}`);
+            mainMenu();
+        }
+
+        function maintenanceQuotes() {
+            let quotes = [];
+            for (let i = 0; i < 3; i++) {
+                let quote = parseFloat(prompt(`Informe o orçamento ${i + 1}:`));
+                quotes.push(quote);
+            }
+            let minQuote = Math.min(...quotes);
+            console.log(`O menor orçamento é R$${minQuote.toFixed(2)}`);
+            mainMenu();
+        }
+
+        // Inicia o programa
+        showWelcome();
+    </script>
+</body>
+</html>
